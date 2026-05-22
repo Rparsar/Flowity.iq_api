@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -8,17 +9,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn() => ['status' => 'ok', 'service' => 'flowity-api']);
 
-// Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index']);
-Route::get('/dashboard/kpis', [DashboardController::class, 'kpis']);
-Route::get('/dashboard/alertas', [DashboardController::class, 'alertas']);
+// Auth (públicas)
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-// Productos
-Route::apiResource('productos', ProductoController::class);
+// Protegidas con Sanctum
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-// Proveedores
-Route::apiResource('proveedores', ProveedorController::class);
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard/kpis', [DashboardController::class, 'kpis']);
+    Route::get('/dashboard/alertas', [DashboardController::class, 'alertas']);
 
-// Ventas
-Route::apiResource('ventas', VentaController::class);
-Route::get('/ventas/estadisticas/resumen', [VentaController::class, 'estadisticas']);
+    // Productos
+    Route::apiResource('productos', ProductoController::class);
+
+    // Proveedores
+    Route::apiResource('proveedores', ProveedorController::class);
+
+    // Ventas
+    Route::apiResource('ventas', VentaController::class);
+    Route::get('/ventas/estadisticas/resumen', [VentaController::class, 'estadisticas']);
+});
