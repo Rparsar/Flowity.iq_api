@@ -14,7 +14,8 @@ class VentaDetalle extends Model
 
     protected $fillable = [
         'venta_id',
-        'producto_id',
+        'vendible_id',
+        'vendible_type',
         'nombre',
         'cantidad',
         'precio',
@@ -32,8 +33,13 @@ class VentaDetalle extends Model
         return $this->belongsTo(Venta::class);
     }
 
+    public function vendible()
+    {
+        return $this->morphTo();
+    }
+
     public function producto(): BelongsTo
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(Producto::class, 'vendible_id')->where('vendible_type', 'App\Models\Producto');
     }
 }

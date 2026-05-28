@@ -42,4 +42,14 @@ class Producto extends Model
     {
         return $this->hasMany(VentaDetalle::class);
     }
+
+    public function suscripciones()
+    {
+        return $this->morphMany(Suscripcion::class, 'suscriptible');
+    }
+
+    public function ventaDetallesPolimorficas()
+    {
+        return $this->morphMany(VentaDetalle::class, 'vendible');
+    }
 }

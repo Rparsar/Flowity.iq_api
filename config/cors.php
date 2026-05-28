@@ -19,6 +19,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,  // Necesario para Sanctum
+    'supports_credentials' => false,
 
 ];

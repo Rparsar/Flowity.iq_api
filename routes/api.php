@@ -5,6 +5,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\EncargoController;
+use App\Http\Controllers\SuscripcionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn() => ['status' => 'ok', 'service' => 'flowity-api']);
@@ -30,6 +34,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('proveedores', ProveedorController::class);
 
     // Ventas
-    Route::apiResource('ventas', VentaController::class);
     Route::get('/ventas/estadisticas/resumen', [VentaController::class, 'estadisticas']);
+    Route::apiResource('ventas', VentaController::class);
+
+    // Servicios
+    Route::apiResource('servicios', ServicioController::class);
+
+    // Reservas
+    Route::apiResource('reservas', ReservaController::class);
+
+    // Encargos
+    Route::apiResource('encargos', EncargoController::class);
+
+    // Suscripciones
+    Route::apiResource('suscripciones', SuscripcionController::class);
 });
