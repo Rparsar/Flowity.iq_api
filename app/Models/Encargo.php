@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Encargo extends Model
 {
-    protected $fillable = ['nombre', 'descripcion', 'cliente', 'email', 'telefono', 'precio', 'estado'];
+    protected $fillable = ['nombre', 'descripcion', 'cliente', 'email', 'telefono', 'precio', 'fecha', 'estado'];
 
     public function suscripciones()
     {

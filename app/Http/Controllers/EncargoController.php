@@ -27,6 +27,7 @@ class EncargoController extends Controller
             'email' => 'required|email',
             'telefono' => 'required|string|max:20',
             'precio' => 'numeric|min:0',
+            'fecha' => 'nullable|date_format:Y-m-d H:i:s',
             'estado' => 'in:activo,inactivo',
         ]);
 
@@ -52,6 +53,7 @@ class EncargoController extends Controller
             'email' => 'sometimes|email',
             'telefono' => 'sometimes|string|max:20',
             'precio' => 'sometimes|numeric|min:0',
+            'fecha' => 'nullable|date_format:Y-m-d H:i:s',
             'estado' => 'sometimes|in:activo,inactivo',
         ]);
 
