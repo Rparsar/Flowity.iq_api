@@ -10,12 +10,10 @@ class ReservaController extends Controller
 {
     public function index(): JsonResponse
     {
-        $reservas = Reserva::all();
-
         return response()->json([
-            'total' => $reservas->count(),
-            'reservas' => $reservas,
-        ]);
+            'total'    => Reserva::count(),
+            'reservas' => Reserva::latest()->get(),
+        ], 201);
     }
 
     public function store(Request $request): JsonResponse
@@ -62,7 +60,7 @@ class ReservaController extends Controller
         return response()->json([
             'message' => 'Reserva actualizada exitosamente',
             'reserva' => $reserva->fresh(),
-        ]);
+        ], 201);
     }
 
     public function destroy(Reserva $reserva): JsonResponse
@@ -71,6 +69,6 @@ class ReservaController extends Controller
 
         return response()->json([
             'message' => 'Reserva eliminada exitosamente',
-        ]);
+        ], 201);
     }
 }

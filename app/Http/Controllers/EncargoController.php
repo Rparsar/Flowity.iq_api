@@ -10,11 +10,9 @@ class EncargoController extends Controller
 {
     public function index(): JsonResponse
     {
-        $encargos = Encargo::all();
-
         return response()->json([
-            'total' => $encargos->count(),
-            'encargos' => $encargos,
+            'total'    => Encargo::count(),
+            'encargos' => Encargo::latest()->get(),
         ]);
     }
 

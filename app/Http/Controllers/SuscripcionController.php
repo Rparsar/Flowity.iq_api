@@ -10,11 +10,9 @@ class SuscripcionController extends Controller
 {
     public function index(): JsonResponse
     {
-        $suscripciones = Suscripcion::all();
-
         return response()->json([
-            'total' => $suscripciones->count(),
-            'suscripciones' => $suscripciones,
+            'total'         => Suscripcion::count(),
+            'suscripciones' => Suscripcion::with('suscriptible')->latest()->get(),
         ]);
     }
 

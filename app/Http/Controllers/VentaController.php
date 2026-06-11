@@ -12,26 +12,17 @@ class VentaController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Venta::query();
-
-        if ($request->has('estado')) {
-            $query->where('estado', $request->input('estado'));
-        }
-
-        if ($request->has('desde')) {
-            $query->whereDate('fecha', '>=', $request->input('desde'));
-        }
-
-        if ($request->has('hasta')) {
-            $query->whereDate('fecha', '<=', $request->input('hasta'));
-        }
-
-        $ventas = $query->with('detalles')->latest('fecha')->get();
+        $ventas = Venta::when($request->estado, fn($q, $v) => $q->where('estado', $v))
+            ->when($request->desde, fn($q, $v) => $q->whereDate('fecha', '>=', $v))
+            ->when($request->hasta, fn($q, $v) => $q->whereDate('fecha', '<=', $v))
+            ->with('detalles')
+            ->latest('fecha')
+            ->get();
 
         return response()->json([
-            'total' => $ventas->count(),
+            'total'  => $ventas->count(),
             'ventas' => $ventas,
-        ]);
+        ], 201);
     }
 
     public function store(Request $request): JsonResponse
@@ -42,7 +33,8 @@ class VentaController extends Controller
             'estado' => 'in:completada,pendiente,cancelada',
             'metodo_pago' => 'nullable|string|max:255',
             'items' => 'required|array|min:1',
-            'items.*.producto_id' => 'nullable|exists:productos,id',
+            'items.*.vendible_id' => 'nullable|integer',
+            'items.*.vendible_type' => 'nullable|string',
             'items.*.nombre' => 'required|string',
             'items.*.cantidad' => 'required|integer|min:1',
             'items.*.precio' => 'required|numeric|min:0',
@@ -57,6 +49,7 @@ class VentaController extends Controller
             'fecha' => now(),
         ]);
 
+        //crear detalle de venta iterando item
         foreach ($validated['items'] as $item) {
             VentaDetalle::create([
                 'venta_id' => $venta->id,
@@ -93,7 +86,7 @@ class VentaController extends Controller
         return response()->json([
             'message' => 'Venta actualizada exitosamente',
             'venta' => $venta->fresh('detalles'),
-        ]);
+        ], 201);
     }
 
     public function destroy(Venta $venta): JsonResponse
@@ -102,7 +95,7 @@ class VentaController extends Controller
 
         return response()->json([
             'message' => 'Venta eliminada exitosamente',
-        ]);
+        ], 201);
     }
 
     public function estadisticas(): JsonResponse
@@ -118,6 +111,6 @@ class VentaController extends Controller
             'completadas' => $completadas,
             'pendientes' => $pendientes,
             'ticket_medio' => $totalVentas > 0 ? (float) ($totalIngresos / $totalVentas) : 0,
-        ]);
+        ], 201);
     }
 }
