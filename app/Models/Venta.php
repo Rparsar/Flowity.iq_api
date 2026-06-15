@@ -26,8 +26,23 @@ class Venta extends Model
         'fecha' => 'datetime',
     ];
 
-    public function detalles(): HasMany
+    public function productoVentas(): HasMany
     {
-        return $this->hasMany(VentaDetalle::class);
+        return $this->hasMany(ProductoVenta::class);
+    }
+
+    public function servicioVentas(): HasMany
+    {
+        return $this->hasMany(ServicioVenta::class);
+    }
+
+    public function reservaVentas(): HasMany
+    {
+        return $this->hasMany(ReservaVenta::class);
+    }
+
+    public function encargoVentas(): HasMany
+    {
+        return $this->hasMany(EncargoVenta::class);
     }
 }

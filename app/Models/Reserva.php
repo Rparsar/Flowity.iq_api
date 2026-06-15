@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserva extends Model
 {
-    protected $fillable = ['nombre', 'cliente', 'email', 'telefono', 'precio', 'fecha_inicio', 'fecha_fin', 'estado'];
+    protected $fillable = ['nombre', 'descripcion', 'precio', 'estado'];
 
-    protected $casts = [
-        'fecha_inicio' => 'datetime',
-        'fecha_fin' => 'datetime',
-    ];
+    protected $casts = [];
 
     public function suscripciones()
     {

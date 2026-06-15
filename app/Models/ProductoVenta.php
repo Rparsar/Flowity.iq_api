@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class VentaDetalle extends Model
+class ProductoVenta extends Model
 {
     use HasFactory;
 
-    protected $table = 'venta_detalles';
+    protected $table = 'producto_ventas';
 
     protected $fillable = [
         'venta_id',
-        'vendible_id',
-        'vendible_type',
+        'producto_id',
         'nombre',
+        'apellidos',
+        'email',
+        'telefono',
         'cantidad',
         'precio',
         'subtotal',
@@ -33,13 +35,8 @@ class VentaDetalle extends Model
         return $this->belongsTo(Venta::class);
     }
 
-    public function vendible()
-    {
-        return $this->morphTo();
-    }
-
     public function producto(): BelongsTo
     {
-        return $this->belongsTo(Producto::class, 'vendible_id')->where('vendible_type', 'App\Models\Producto');
+        return $this->belongsTo(Producto::class);
     }
 }

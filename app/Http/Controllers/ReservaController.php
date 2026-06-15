@@ -20,12 +20,8 @@ class ReservaController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
-            'cliente' => 'required|string|max:255',
-            'email' => 'required|email',
-            'telefono' => 'required|string|max:20',
+            'descripcion' => 'nullable|string',
             'precio' => 'numeric|min:0',
-            'fecha_inicio' => 'nullable|date_format:Y-m-d H:i:s',
-            'fecha_fin' => 'nullable|date_format:Y-m-d H:i:s',
             'estado' => 'in:activo,inactivo',
         ]);
 
@@ -46,12 +42,8 @@ class ReservaController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'sometimes|string|max:255',
-            'cliente' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email',
-            'telefono' => 'sometimes|string|max:20',
+            'descripcion' => 'sometimes|string',
             'precio' => 'sometimes|numeric|min:0',
-            'fecha_inicio' => 'nullable|date_format:Y-m-d H:i:s',
-            'fecha_fin' => 'nullable|date_format:Y-m-d H:i:s',
             'estado' => 'sometimes|in:activo,inactivo',
         ]);
 
