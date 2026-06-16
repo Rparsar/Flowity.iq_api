@@ -52,4 +52,9 @@ class Producto extends Model
     {
         return $this->morphMany(VentaDetalle::class, 'vendible');
     }
+
+    public function ventaEncargos(): HasMany
+    {
+        return $this->hasMany(VentaEncargo::class);
+    }
 }

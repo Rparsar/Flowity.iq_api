@@ -15,6 +15,10 @@ class Venta extends Model
     protected $fillable = [
         'codigo',
         'cliente',
+        'nombre',
+        'apellidos',
+        'email',
+        'telefono',
         'total',
         'estado',
         'metodo_pago',

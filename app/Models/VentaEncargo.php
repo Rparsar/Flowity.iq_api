@@ -2,26 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ServicioVenta extends Model
+class VentaEncargo extends Model
 {
-    use HasFactory;
-
-    protected $table = 'servicio_ventas';
+    protected $table = 'encargo_ventas';
 
     protected $fillable = [
         'venta_id',
-        'servicio_id',
+        'encargo_id',
+        'nombre',
+        'apellidos',
+        'email',
+        'telefono',
+        'cantidad',
         'precio',
         'subtotal',
+        'fecha',
     ];
 
     protected $casts = [
         'precio' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'cantidad' => 'integer',
+        'fecha' => 'datetime',
     ];
 
     public function venta(): BelongsTo
@@ -29,8 +34,8 @@ class ServicioVenta extends Model
         return $this->belongsTo(Venta::class);
     }
 
-    public function servicio(): BelongsTo
+    public function encargo(): BelongsTo
     {
-        return $this->belongsTo(Servicio::class);
+        return $this->belongsTo(Encargo::class);
     }
 }

@@ -15,11 +15,8 @@ class EncargoVenta extends Model
     protected $fillable = [
         'venta_id',
         'encargo_id',
-        'nombre',
-        'apellidos',
-        'email',
-        'telefono',
         'fecha',
+        'cantidad',
         'precio',
         'subtotal',
     ];
@@ -28,6 +25,7 @@ class EncargoVenta extends Model
         'precio' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'fecha' => 'datetime',
+        'cantidad' => 'integer',
     ];
 
     public function venta(): BelongsTo

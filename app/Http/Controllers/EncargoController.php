@@ -19,10 +19,12 @@ class EncargoController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'precio' => 'numeric|min:0',
-            'estado' => 'in:activo,inactivo',
+            'precio'      => 'numeric|min:0',
+            'estado'      => 'in:activo,inactivo',
+            'producto_id' => 'nullable|exists:productos,id',
+            'dia_semana'  => 'nullable|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
         ]);
 
         $encargo = Encargo::create($validated);
@@ -41,10 +43,12 @@ class EncargoController extends Controller
     public function update(Request $request, Encargo $encargo): JsonResponse
     {
         $validated = $request->validate([
-            'nombre' => 'sometimes|string|max:255',
+            'nombre'      => 'sometimes|string|max:255',
             'descripcion' => 'sometimes|string',
-            'precio' => 'sometimes|numeric|min:0',
-            'estado' => 'sometimes|in:activo,inactivo',
+            'precio'      => 'sometimes|numeric|min:0',
+            'estado'      => 'sometimes|in:activo,inactivo',
+            'producto_id' => 'nullable|exists:productos,id',
+            'dia_semana'  => 'nullable|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
         ]);
 
         $encargo->update($validated);

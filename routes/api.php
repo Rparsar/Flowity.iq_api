@@ -17,6 +17,19 @@ Route::get('/health', fn() => ['status' => 'ok', 'service' => 'flowity-api']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Endpoints públicos para web cliente
+Route::prefix('public')->group(function () {
+    Route::get('/productos', [ProductoController::class, 'index']);
+    Route::get('/productos/{producto}', [ProductoController::class, 'show']);
+    Route::get('/servicios', [ServicioController::class, 'index']);
+    Route::get('/servicios/{servicio}', [ServicioController::class, 'show']);
+    Route::get('/reservas', [ReservaController::class, 'index']);
+    Route::get('/reservas/{reserva}', [ReservaController::class, 'show']);
+    Route::get('/encargos', [EncargoController::class, 'index']);
+    Route::get('/encargos/{encargo}', [EncargoController::class, 'show']);
+    Route::post('/ventas', [VentaController::class, 'store']);
+});
+
 // Protegidas con Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);

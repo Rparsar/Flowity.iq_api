@@ -15,17 +15,17 @@ class ReservaVenta extends Model
     protected $fillable = [
         'venta_id',
         'reserva_id',
-        'nombre',
-        'apellidos',
-        'email',
-        'telefono',
         'precio',
         'subtotal',
+        'fecha_inicio',
+        'fecha_fin',
     ];
 
     protected $casts = [
         'precio' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'fecha_inicio' => 'datetime',
+        'fecha_fin' => 'datetime',
     ];
 
     public function venta(): BelongsTo

@@ -15,10 +15,6 @@ class ProductoVenta extends Model
     protected $fillable = [
         'venta_id',
         'producto_id',
-        'nombre',
-        'apellidos',
-        'email',
-        'telefono',
         'cantidad',
         'precio',
         'subtotal',

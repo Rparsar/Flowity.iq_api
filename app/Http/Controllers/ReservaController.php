@@ -19,10 +19,12 @@ class ReservaController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'precio' => 'numeric|min:0',
-            'estado' => 'in:activo,inactivo',
+            'nombre'       => 'required|string|max:255',
+            'descripcion'  => 'nullable|string',
+            'precio'       => 'numeric|min:0',
+            'estado'       => 'in:activo,inactivo',
+            'fecha_inicio' => 'nullable|date_format:Y-m-d H:i:s',
+            'fecha_fin'    => 'nullable|date_format:Y-m-d H:i:s',
         ]);
 
         $reserva = Reserva::create($validated);
@@ -41,10 +43,12 @@ class ReservaController extends Controller
     public function update(Request $request, Reserva $reserva): JsonResponse
     {
         $validated = $request->validate([
-            'nombre' => 'sometimes|string|max:255',
-            'descripcion' => 'sometimes|string',
-            'precio' => 'sometimes|numeric|min:0',
-            'estado' => 'sometimes|in:activo,inactivo',
+            'nombre'       => 'sometimes|string|max:255',
+            'descripcion'  => 'sometimes|string',
+            'precio'       => 'sometimes|numeric|min:0',
+            'estado'       => 'sometimes|in:activo,inactivo',
+            'fecha_inicio' => 'nullable|date_format:Y-m-d H:i:s',
+            'fecha_fin'    => 'nullable|date_format:Y-m-d H:i:s',
         ]);
 
         $reserva->update($validated);
