@@ -13,7 +13,7 @@ class ServicioController extends Controller
         return response()->json([
             'total'     => Servicio::count(),
             'servicios' => Servicio::latest()->get(),
-        ], 201);
+        ], 200);
     }
 
     public function store(Request $request): JsonResponse
@@ -45,14 +45,14 @@ class ServicioController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'sometimes|numeric|min:0',
             'estado' => 'sometimes|in:activo,inactivo',
-        ], 201);
+        ]);
 
         $servicio->update($validated);
 
         return response()->json([
             'message' => 'Servicio actualizado exitosamente',
             'servicio' => $servicio->fresh(),
-        ], 201);
+        ], 200);
     }
 
     public function destroy(Servicio $servicio): JsonResponse
@@ -61,6 +61,6 @@ class ServicioController extends Controller
 
         return response()->json([
             'message' => 'Servicio eliminado exitosamente',
-        ], 201);
+        ], 200);
     }
 }

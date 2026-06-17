@@ -49,8 +49,13 @@ class VentaController extends Controller
                 'items.*.precio'       => 'required|numeric|min:0',
             ]);
 
+            // Obtener el último código de venta existente para evitar duplicados
+            $ultimaVenta = Venta::orderBy('id', 'desc')->first();
+            $ultimoNumero = $ultimaVenta ? (int) substr($ultimaVenta->codigo, strrpos($ultimaVenta->codigo, '-') + 1) : 0;
+            $nuevoNumero = $ultimoNumero + 1;
+
             $venta = Venta::create([
-                'codigo'      => 'V-' . now()->format('Y') . '-' . Str::padLeft((Venta::count() + 1), 4, '0'),
+                'codigo'      => 'V-' . now()->format('Y') . '-' . Str::padLeft($nuevoNumero, 4, '0'),
                 'cliente'     => $validated['nombre'] . ' ' . $validated['apellidos'],
                 'nombre'      => $validated['nombre'],
                 'apellidos'   => $validated['apellidos'],

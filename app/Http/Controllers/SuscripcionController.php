@@ -56,7 +56,7 @@ class SuscripcionController extends Controller
         return response()->json([
             'message' => 'Suscripción actualizada exitosamente',
             'suscripcion' => $suscripcion->fresh('suscriptible'),
-        ]);
+        ], 200);
     }
 
     public function destroy(Suscripcion $suscripcion): JsonResponse
@@ -65,6 +65,6 @@ class SuscripcionController extends Controller
 
         return response()->json([
             'message' => 'Suscripción eliminada exitosamente',
-        ]);
+        ], 200);
     }
 }

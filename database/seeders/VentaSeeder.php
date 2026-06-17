@@ -16,7 +16,10 @@ class VentaSeeder extends Seeder
         $metodos = ['tarjeta', 'transferencia', 'paypal'];
         $estados = ['completada', 'pendiente', 'cancelada'];
         
-        $ventaCounter = 1;
+        // Obtener el último código de venta existente para evitar duplicados
+        $ultimaVenta = Venta::orderBy('id', 'desc')->first();
+        $ventaCounter = $ultimaVenta ? (int) substr($ultimaVenta->codigo, strrpos($ultimaVenta->codigo, '-') + 1) : 0;
+        $ventaCounter++;
         
         for ($i = 11; $i >= 0; $i--) {
             $fecha = Carbon::now()->subMonths($i);

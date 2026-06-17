@@ -12,7 +12,7 @@ class EncargoController extends Controller
     {
         return response()->json([
             'total'    => Encargo::count(),
-            'encargos' => Encargo::latest()->get(),
+            'encargos' => Encargo::with('producto:id,nombre')->latest()->get(),
         ]);
     }
 
@@ -37,7 +37,7 @@ class EncargoController extends Controller
 
     public function show(Encargo $encargo): JsonResponse
     {
-        return response()->json($encargo);
+        return response()->json($encargo->load('producto'));
     }
 
     public function update(Request $request, Encargo $encargo): JsonResponse
@@ -56,7 +56,7 @@ class EncargoController extends Controller
         return response()->json([
             'message' => 'Encargo actualizado exitosamente',
             'encargo' => $encargo->fresh(),
-        ]);
+        ], 200);
     }
 
     public function destroy(Encargo $encargo): JsonResponse
@@ -65,6 +65,6 @@ class EncargoController extends Controller
 
         return response()->json([
             'message' => 'Encargo eliminado exitosamente',
-        ]);
+        ], 200);
     }
 }

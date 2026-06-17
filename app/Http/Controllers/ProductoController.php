@@ -10,21 +10,20 @@ class ProductoController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Producto::query();
-
-        if ($request->has('categoria')) {
-            $query->where('categoria', $request->input('categoria'));
-        }
-
-        if ($request->has('estado')) {
-            $query->where('estado', $request->input('estado'));
-        }
-
-        if ($request->boolean('stock_bajo')) {
-            $query->whereColumn('stock', '<', 'stock_minimo');
-        }
-
-        $productos = $query->with('proveedor')->get();
+        $productos = Producto::when(
+            $request->has('categoria'),
+            fn($query) => $query->where('categoria', $request->input('categoria'))
+        )
+        ->when(
+            $request->has('estado'),
+            fn($query) => $query->where('estado', $request->input('estado'))
+        )
+        ->when(
+            $request->boolean('stock_bajo'),
+            fn($query) => $query->whereColumn('stock', '<', 'stock_minimo')
+        )
+        ->with('proveedor')
+        ->get();
 
         return response()->json([
             'total' => $productos->count(),
@@ -89,6 +88,6 @@ class ProductoController extends Controller
 
         return response()->json([
             'message' => 'Producto eliminado exitosamente',
-        ]);
+        ], 200);
     }
 }

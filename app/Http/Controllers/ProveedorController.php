@@ -10,13 +10,12 @@ class ProveedorController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Proveedor::query();
-
-        if ($request->has('estado')) {
-            $query->where('estado', $request->input('estado'));
-        }
-
-        $proveedores = $query->withCount('productos')->get();
+        $proveedores = Proveedor::when(
+            $request->has('estado'),
+            fn($query) => $query->where('estado', $request->input('estado'))
+        )
+        ->withCount('productos')
+        ->get();
 
         return response()->json([
             'total' => $proveedores->count(),
@@ -64,7 +63,7 @@ class ProveedorController extends Controller
         return response()->json([
             'message' => 'Proveedor actualizado exitosamente',
             'proveedor' => $proveedor->fresh(),
-        ]);
+        ], 200);
     }
 
     public function destroy(Proveedor $proveedor): JsonResponse
@@ -73,6 +72,6 @@ class ProveedorController extends Controller
 
         return response()->json([
             'message' => 'Proveedor eliminado exitosamente',
-        ]);
+        ], 200);
     }
 }

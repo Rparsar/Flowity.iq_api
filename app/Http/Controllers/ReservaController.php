@@ -13,7 +13,7 @@ class ReservaController extends Controller
         return response()->json([
             'total'    => Reserva::count(),
             'reservas' => Reserva::latest()->get(),
-        ], 201);
+        ], 200);
     }
 
     public function store(Request $request): JsonResponse
@@ -56,7 +56,7 @@ class ReservaController extends Controller
         return response()->json([
             'message' => 'Reserva actualizada exitosamente',
             'reserva' => $reserva->fresh(),
-        ], 201);
+        ], 200);
     }
 
     public function destroy(Reserva $reserva): JsonResponse
@@ -65,6 +65,6 @@ class ReservaController extends Controller
 
         return response()->json([
             'message' => 'Reserva eliminada exitosamente',
-        ], 201);
+        ], 200);
     }
 }
