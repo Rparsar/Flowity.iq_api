@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/dashboard/kpis', [DashboardController::class, 'kpis']);
     Route::get('/dashboard/alertas', [DashboardController::class, 'alertas']);
+    Route::get('/dashboard/grafica-evolucion', [DashboardController::class, 'graficaEvolucion']);
 
     // Productos
     Route::apiResource('productos', ProductoController::class);
@@ -47,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('proveedores', ProveedorController::class);
 
     // Ventas
-    Route::get('/ventas/estadisticas/resumen', [VentaController::class, 'estadisticas']);
+    Route::get('/ventas/estadisticas/resumen', [VentaController::class, 'getEstadisticasVentas']);
     Route::apiResource('ventas', VentaController::class);
 
     // Servicios

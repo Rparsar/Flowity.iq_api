@@ -156,4 +156,22 @@ class VentaController extends Controller
             'ticket_medio' => $totalVentas > 0 ? (float) ($totalIngresos / $totalVentas) : 0,
         ], 201);
     }
+
+    public function getEstadisticasVentas(): JsonResponse
+    {
+        $totalVentas = Venta::count();
+        $totalIngresos = Venta::where('estado', 'completada')->sum('total');
+        $completadas = Venta::where('estado', 'completada')->count();
+        $pendientes = Venta::where('estado', 'pendiente')->count();
+        $canceladas = Venta::where('estado', 'cancelada')->count();
+
+        return response()->json([
+            'total_ventas' => $totalVentas,
+            'total_ingresos' => (float) $totalIngresos,
+            'completadas' => $completadas,
+            'pendientes' => $pendientes,
+            'canceladas' => $canceladas,
+            'ticket_medio' => $totalVentas > 0 ? (float) ($totalIngresos / $totalVentas) : 0,
+        ], 201);
+    }
 }
