@@ -1,59 +1,316 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔧 Flowity.iq API - Backend Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful completa para el sistema de gestión empresarial Flowity.iq, proporcionando servicios de autenticación, gestión de ventas, inventario, recursos y análisis de datos.
 
-## About Laravel
+## 📋 Propósito Funcional
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+El backend de Flowity.iq es el núcleo de procesamiento de datos que:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **🔐 Gestiona Autenticación**: Sistema de login con Laravel Sanctum para tokens seguros
+- **💼 Procesa Ventas**: CRUD completo de ventas con soporte para múltiples tipos de items (productos, servicios, reservas, encargos)
+- **📊 Genera Analíticas**: Dashboard con KPIs calculados dinámicamente, historial de ventas y estadísticas de stock
+- **📦 Controla Inventario**: Gestión de productos con alertas de stock bajo/crítico
+- **🗂️ Cataloga Recursos**: CRUD de productos, servicios, reservas y encargos
+- **🚚 Gestiona Proveedores**: Registro y seguimiento de proveedores
+- **👤 Administra Usuarios**: Sistema de usuarios con roles
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🔧 Requisitos Previos
 
-## Learning Laravel
+- **PHP** 8.2 o superior
+- **Composer** 2.x o superior
+- **Node.js** 20.x (para assets con Vite)
+- **Base de Datos**: MySQL 8.0+ o PostgreSQL 14+
+- **Extensiones PHP**: `pdo`, `mbstring`, `openssl`, `json`, `tokenizer`, `xml`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Instalación Paso a Paso
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clonar y navegar al proyecto
+```powershell
+cd c:\Users\rpard\FlowityIQ\flowity.iq_api
+```
 
-## Laravel Sponsors
+### 2. Instalar dependencias PHP
+```powershell
+composer install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Configurar entorno
+```powershell
+# Copiar archivo de ejemplo
+copy .env.example .env
 
-### Premium Partners
+# Generar clave de aplicación
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Editar `.env` con configuración de base de datos:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=flowity_iq
+DB_USERNAME=root
+DB_PASSWORD=tu_password
+```
 
-## Contributing
+### 4. Instalar dependencias Node (opcional, para assets)
+```powershell
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. Ejecutar migraciones
+```powershell
+php artisan migrate
+```
 
-## Code of Conduct
+### 6. Ejecutar seeders (datos de prueba)
+```powershell
+php artisan db:seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 7. Iniciar servidor
+```powershell
+php artisan serve
+```
 
-## Security Vulnerabilities
+La API estará disponible en: **http://localhost:8000**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## ⚡ Comandos Útiles
 
-## License
+### Artisan (CLI de Laravel)
+| Comando | Descripción |
+|---------|-------------|
+| `php artisan serve` | Inicia servidor de desarrollo |
+| `php artisan migrate` | Ejecuta migraciones pendientes |
+| `php artisan migrate:rollback` | Revierte últimas migraciones |
+| `php artisan migrate:fresh --seed` | Recrea BD desde cero con seeders |
+| `php artisan db:seed` | Ejecuta seeders |
+| `php artisan make:model Nombre -m` | Crea modelo con migración |
+| `php artisan make:controller NombreController` | Crea controlador |
+| `php artisan route:list` | Lista todas las rutas |
+| `php artisan cache:clear` | Limpia caché de aplicación |
+| `php artisan config:clear` | Limpia caché de configuración |
+| `php artisan optimize` | Optimiza la aplicación |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Composer
+```powershell
+# Actualizar dependencias
+composer update
+
+# Autoload optimizado
+composer dump-autoload -o
+
+# Instalación de paquete
+composer require vendor/paquete
+```
+
+### Testing
+```powershell
+# Ejecutar tests
+php artisan test
+
+# Con cobertura
+php artisan test --coverage
+```
+
+### Base de Datos
+```powershell
+# Crear migración
+php artisan make:migration create_nombre_tabla
+
+# Resetear y re-migrar
+php artisan migrate:fresh
+
+# Seed específico
+php artisan db:seed --class=NombreSeeder
+```
+
+## 📁 Estructura de Archivos
+
+```
+flowity.iq_api/
+├── 📁 app/                          # Código fuente principal
+│   ├── 📁 Http/
+│   │   └── 📁 Controllers/          # Controladores API
+│   │       ├── 📄 DashboardController.php    # KPIs y estadísticas
+│   │       ├── 📄 VentaController.php         # Gestión de ventas
+│   │       ├── 📄 ProductoController.php      # CRUD productos
+│   │       ├── 📄 ServicioController.php      # CRUD servicios
+│   │       ├── 📄 ReservaController.php       # CRUD reservas
+│   │       ├── 📄 EncargoController.php       # CRUD encargos
+│   │       ├── 📄 ProveedorController.php     # CRUD proveedores
+│   │       └── 📄 AuthController.php          # Autenticación
+│   │
+│   ├── 📁 Models/                   # Modelos Eloquent
+│   │   ├── 📄 Venta.php             # Modelo principal de ventas
+│   │   ├── 📄 Producto.php          # Productos con stock
+│   │   ├── 📄 ProductoVenta.php     # Relación N:M ventas-productos
+│   │   ├── 📄 Servicio.php          # Servicios
+│   │   ├── 📄 ServicioVenta.php     # Relación N:M ventas-servicios
+│   │   ├── 📄 Reserva.php           # Reservas
+│   │   ├── 📄 ReservaVenta.php      # Relación N:M ventas-reservas
+│   │   ├── 📄 Encargo.php           # Encargos recurrentes
+│   │   ├── 📄 EncargoVenta.php      # Relación N:M ventas-encargos
+│   │   ├── 📄 Proveedor.php         # Proveedores
+│   │   ├── 📄 Suscripcion.php       # Suscripciones de clientes
+│   │   └── 📄 User.php              # Usuarios con Sanctum
+│   │
+│   └── 📁 Providers/                # Proveedores de servicios
+│
+├── 📁 bootstrap/                    # Bootstrapping de la aplicación
+├── 📁 config/                       # Archivos de configuración
+│   ├── 📄 app.php                   # Configuración general
+│   ├── 📄 auth.php                  # Configuración de autenticación
+│   ├── 📄 database.php              # Configuración de BD
+│   └── 📄 sanctum.php               # Configuración de API tokens
+│
+├── 📁 database/
+│   ├── 📁 factories/                # Factories para datos de prueba
+│   ├── 📁 migrations/               # Migraciones de esquema
+│   │   ├── 📄 0001_01_01_000000_create_users_table.php
+│   │   ├── 📄 2025_05_21_100000_create_proveedores_table.php
+│   │   ├── 📄 2025_05_21_100001_create_productos_table.php
+│   │   ├── 📄 2025_05_21_100002_create_ventas_table.php
+│   │   ├── 📄 2026_05_27_201305_create_servicios_table.php
+│   │   ├── 📄 2026_05_27_201322_create_reservas_table.php
+│   │   ├── 📄 2026_05_27_201333_create_encargos_table.php
+│   │   ├── 📄 2026_06_15_000004_create_producto_ventas_table.php
+│   │   ├── 📄 2026_06_15_000005_create_servicio_ventas_table.php
+│   │   ├── 📄 2026_06_15_000006_create_reserva_ventas_table.php
+│   │   └── 📄 2026_06_15_000007_create_encargo_ventas_table.php
+│   │
+│   └── 📁 seeders/                  # Seeders para datos iniciales
+│
+├── 📁 routes/                       # Definición de rutas
+│   ├── 📄 api.php                   # Rutas API (cargan controllers)
+│   ├── 📄 web.php                   # Rutas web (no usadas en API)
+│   └── 📄 console.php               # Comandos de consola
+│
+├── 📁 storage/                      # Almacenamiento (logs, caché, uploads)
+├── 📁 tests/                        # Tests automatizados
+├── 📁 vendor/                       # Dependencias Composer (no versionar)
+├── 📄 .env                          # Variables de entorno (no versionar)
+├── 📄 .env.example                  # Plantilla de variables
+├── 📄 artisan                       # CLI de Laravel
+├── 📄 composer.json                 # Dependencias PHP
+└── 📄 phpunit.xml                   # Configuración de testing
+```
+
+## 🗄️ Modelo de Datos
+
+### Entidades Principales
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│    Ventas       │────<│  ProductoVenta   │>────│    Productos    │
+├─────────────────┤     ├──────────────────┤     ├─────────────────┤
+│ id              │     │ id               │     │ id              │
+│ codigo          │     │ venta_id         │     │ nombre          │
+│ cliente         │     │ producto_id     │     │ stock           │
+│ total           │     │ cantidad         │     │ stock_minimo    │
+│ estado          │     │ precio           │     │ precio          │
+│ fecha           │     │ subtotal         │     │ proveedor_id    │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+         │
+         │              ┌──────────────────┐     ┌─────────────────┐
+         ├────────────<│  ServicioVenta     │>────│    Servicios    │
+         │              ├──────────────────┤     ├─────────────────┤
+         │              │ venta_id           │     │ id              │
+         │              │ servicio_id       │     │ nombre          │
+         │              │ precio            │     │ precio          │
+         │              │ subtotal          │     │ descripcion     │
+         │              └──────────────────┘     └─────────────────┘
+         │
+         │              ┌──────────────────┐     ┌─────────────────┐
+         ├────────────<│  ReservaVenta      │>────│    Reservas     │
+         │              ├──────────────────┤     ├─────────────────┤
+         │              │ venta_id           │     │ id              │
+         │              │ reserva_id        │     │ nombre          │
+         │              │ precio            │     │ precio          │
+         │              │ subtotal          │     │ descripcion     │
+         │              └──────────────────┘     └─────────────────┘
+         │
+         │              ┌──────────────────┐     ┌─────────────────┐
+         └────────────<│  EncargoVenta      │>────│    Encargos     │
+                        ├──────────────────┤     ├─────────────────┤
+                        │ venta_id           │     │ id              │
+                        │ encargo_id        │     │ nombre          │
+                        │ cantidad          │     │ producto_id    │
+                        │ precio            │     │ dia_semana      │
+                        │ subtotal          │     │ cantidad        │
+                        └──────────────────┘     └─────────────────┘
+```
+
+## 🔌 Endpoints API Principales
+
+### Autenticación
+- `POST /api/login` - Iniciar sesión
+- `POST /api/logout` - Cerrar sesión
+- `GET /api/user` - Obtener usuario autenticado
+
+### Ventas
+- `GET /api/ventas` - Listar ventas (con filtros)
+- `GET /api/ventas/{id}` - Detalle de venta con items
+- `POST /api/ventas` - Crear venta
+- `PUT /api/ventas/{id}` - Actualizar venta
+- `DELETE /api/ventas/{id}` - Eliminar venta
+- `GET /api/ventas/estadisticas` - Estadísticas de ventas
+
+### Dashboard
+- `GET /api/dashboard` - KPIs y datos del dashboard
+
+### Recursos (Productos, Servicios, Reservas, Encargos)
+- `GET /api/productos` / `/api/servicios` / `/api/reservas` / `/api/encargos`
+- `POST`, `PUT`, `DELETE` - CRUD completo
+
+### Proveedores
+- `GET /api/proveedores` - Listar
+- `POST`, `PUT`, `DELETE` - CRUD
+
+## 🔐 Autenticación
+
+La API usa **Laravel Sanctum** para autenticación con tokens:
+
+```bash
+# Login devuelve token
+POST /api/login
+{
+  "email": "admin@flowity.iq",
+  "password": "password"
+}
+
+# Respuesta
+{
+  "token": "1|laravel_sanctum_token...",
+  "user": { ... }
+}
+
+# Usar token en headers
+Authorization: Bearer {token}
+```
+
+## 🐛 Troubleshooting
+
+### Error: "No such file or directory"
+- Verificar que estás en el directorio correcto
+- Ejecutar `composer install` si falta la carpeta `vendor`
+
+### Error: "Access denied for user"
+- Verificar credenciales en archivo `.env`
+- Crear base de datos manualmente si no existe
+
+### Error: "Class not found"
+- Ejecutar `composer dump-autoload`
+- Verificar namespace del archivo
+
+### Problemas de caché
+```powershell
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+## 📄 Licencia
+
+Proyecto privado - Flowity.iq © 2026
