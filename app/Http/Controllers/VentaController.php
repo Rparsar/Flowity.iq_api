@@ -117,7 +117,12 @@ class VentaController extends Controller
 
     public function show(Venta $venta): JsonResponse
     {
-        return response()->json($venta->load(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas']));
+        return response()->json($venta->load([
+            'productoVentas.producto:id,nombre',
+            'servicioVentas.servicio:id,nombre',
+            'reservaVentas.reserva:id,nombre',
+            'encargoVentas.encargo:id,nombre',
+        ]));
     }
 
     public function update(Request $request, Venta $venta): JsonResponse
