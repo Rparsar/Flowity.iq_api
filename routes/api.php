@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -42,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/kpis', [DashboardController::class, 'kpis']);
     Route::get('/dashboard/alertas', [DashboardController::class, 'alertas']);
     Route::get('/dashboard/grafica-evolucion', [DashboardController::class, 'graficaEvolucion']);
+
+    // Chat
+    Route::post('/chat', [ChatController::class, 'chat']);
 
     // Productos
     Route::apiResource('productos', ProductoController::class);
