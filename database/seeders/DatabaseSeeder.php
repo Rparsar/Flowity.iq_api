@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             ServicioSeeder::class,
             ReservaSeeder::class,
             EncargoSeeder::class,
+            SuscripcionSeeder::class,
             VentaSeeder::class,
         ]);
     }

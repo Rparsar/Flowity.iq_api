@@ -8,59 +8,84 @@ use Illuminate\Http\Request;
 
 class SuscripcionController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $suscripciones = Suscripcion::when($request->estado, fn($q, $v) => $q->where('estado', $v))
+            ->with('producto')
+            ->latest()
+            ->get();
+
         return response()->json([
-            'total'         => Suscripcion::count(),
-            'suscripciones' => Suscripcion::with('suscriptible')->latest()->get(),
-        ]);
+            'total' => $suscripciones->count(),
+            'suscripciones' => $suscripciones,
+        ], 200);
     }
 
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'suscriptible_id' => 'required|integer',
-            'suscriptible_type' => 'required|string|in:App\Models\Producto,App\Models\Servicio,App\Models\Reserva,App\Models\Encargo',
-            'tipo_periodo' => 'required|in:dia,semana,mes,año',
-            'cantidad_periodos' => 'required|integer|min:1',
-            'fecha_inicio' => 'required|date_format:Y-m-d H:i:s',
-            'fecha_proximo_pago' => 'required|date_format:Y-m-d H:i:s',
-            'estado' => 'in:activa,pausada,cancelada',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'precio' => 'required|numeric|min:0',
+            'planes' => 'required|array',
+            'planes.*' => 'in:mensual,trimestral,semestral',
+            'estado' => 'in:activo,inactivo',
+            'producto_id' => 'nullable|exists:productos,id',
         ]);
 
         $suscripcion = Suscripcion::create($validated);
 
         return response()->json([
             'message' => 'Suscripción creada exitosamente',
-            'suscripcion' => $suscripcion->load('suscriptible'),
+            'suscripcion' => $suscripcion->load('producto'),
         ], 201);
     }
 
-    public function show(Suscripcion $suscripcion): JsonResponse
+    public function show($id): JsonResponse
     {
-        return response()->json($suscripcion->load('suscriptible'));
+        $suscripcion = Suscripcion::find($id);
+        
+        if (!$suscripcion) {
+            return response()->json(['error' => 'Suscripción no encontrada'], 404);
+        }
+        
+        return response()->json($suscripcion->load('producto'), 200);
     }
 
-    public function update(Request $request, Suscripcion $suscripcion): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $suscripcion = Suscripcion::find($id);
+        
+        if (!$suscripcion) {
+            return response()->json(['error' => 'Suscripción no encontrada'], 404);
+        }
+        
         $validated = $request->validate([
-            'tipo_periodo' => 'sometimes|in:dia,semana,mes,año',
-            'cantidad_periodos' => 'sometimes|integer|min:1',
-            'fecha_inicio' => 'sometimes|date_format:Y-m-d H:i:s',
-            'fecha_proximo_pago' => 'sometimes|date_format:Y-m-d H:i:s',
-            'estado' => 'sometimes|in:activa,pausada,cancelada',
+            'nombre' => 'sometimes|string|max:255',
+            'descripcion' => 'sometimes|nullable|string',
+            'precio' => 'sometimes|numeric|min:0',
+            'planes' => 'sometimes|array',
+            'planes.*' => 'in:mensual,trimestral,semestral',
+            'estado' => 'sometimes|in:activo,inactivo',
+            'producto_id' => 'sometimes|nullable|exists:productos,id',
         ]);
 
         $suscripcion->update($validated);
 
         return response()->json([
             'message' => 'Suscripción actualizada exitosamente',
-            'suscripcion' => $suscripcion->fresh('suscriptible'),
+            'suscripcion' => $suscripcion->load('producto'),
         ], 200);
     }
 
-    public function destroy(Suscripcion $suscripcion): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $suscripcion = Suscripcion::find($id);
+        
+        if (!$suscripcion) {
+            return response()->json(['error' => 'Suscripción no encontrada'], 404);
+        }
+        
         $suscripcion->delete();
 
         return response()->json([

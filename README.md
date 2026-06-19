@@ -7,10 +7,10 @@ API RESTful completa para el sistema de gestión empresarial Flowity.iq, proporc
 El backend de Flowity.iq es el núcleo de procesamiento de datos que:
 
 - **🔐 Gestiona Autenticación**: Sistema de login con Laravel Sanctum para tokens seguros
-- **💼 Procesa Ventas**: CRUD completo de ventas con soporte para múltiples tipos de items (productos, servicios, reservas, encargos)
+- **💼 Procesa Ventas**: CRUD completo de ventas con soporte para múltiples tipos de items (productos, servicios, reservas, encargos, suscripciones)
 - **📊 Genera Analíticas**: Dashboard con KPIs calculados dinámicamente, historial de ventas y estadísticas de stock
 - **📦 Controla Inventario**: Gestión de productos con alertas de stock bajo/crítico
-- **🗂️ Cataloga Recursos**: CRUD de productos, servicios, reservas y encargos
+- **🗂️ Cataloga Recursos**: CRUD de productos, servicios, reservas, encargos y suscripciones
 - **🚚 Gestiona Proveedores**: Registro y seguimiento de proveedores
 - **👤 Administra Usuarios**: Sistema de usuarios con roles
 
@@ -139,6 +139,7 @@ flowity.iq_api/
 │   │       ├── 📄 ReservaController.php       # CRUD reservas
 │   │       ├── 📄 EncargoController.php       # CRUD encargos
 │   │       ├── 📄 ProveedorController.php     # CRUD proveedores
+│   │       ├── 📄 SuscripcionController.php   # CRUD suscripciones
 │   │       └── 📄 AuthController.php          # Autenticación
 │   │
 │   ├── 📁 Models/                   # Modelos Eloquent
@@ -153,6 +154,7 @@ flowity.iq_api/
 │   │   ├── 📄 EncargoVenta.php      # Relación N:M ventas-encargos
 │   │   ├── 📄 Proveedor.php         # Proveedores
 │   │   ├── 📄 Suscripcion.php       # Suscripciones de clientes
+│   │   ├── 📄 SuscripcionVenta.php  # Relación N:M ventas-suscripciones
 │   │   └── 📄 User.php              # Usuarios con Sanctum
 │   │
 │   └── 📁 Providers/                # Proveedores de servicios
@@ -177,7 +179,8 @@ flowity.iq_api/
 │   │   ├── 📄 2026_06_15_000004_create_producto_ventas_table.php
 │   │   ├── 📄 2026_06_15_000005_create_servicio_ventas_table.php
 │   │   ├── 📄 2026_06_15_000006_create_reserva_ventas_table.php
-│   │   └── 📄 2026_06_15_000007_create_encargo_ventas_table.php
+│   │   ├── 📄 2026_06_15_000007_create_encargo_ventas_table.php
+│   │   └── 📄 2026_06_16_000008_create_suscripcion_ventas_table.php
 │   │
 │   └── 📁 seeders/                  # Seeders para datos iniciales
 │
@@ -239,6 +242,17 @@ flowity.iq_api/
                         │ precio            │     │ dia_semana      │
                         │ subtotal          │     │ cantidad        │
                         └──────────────────┘     └─────────────────┘
+         │
+         │              ┌──────────────────┐     ┌─────────────────┐
+         └────────────<│  SuscripcionVenta  │>────│   Suscripciones  │
+                        ├──────────────────┤     ├─────────────────┤
+                        │ venta_id           │     │ id              │
+                        │ suscripcion_id    │     │ nombre          │
+                        │ plan              │     │ planes[]        │
+                        │ fecha_proximo_pago│     │ precio          │
+                        │ precio            │     │ descripcion     │
+                        │ subtotal          │     │ producto_id     │
+                        └──────────────────┘     └─────────────────┘
 ```
 
 ## 🔌 Endpoints API Principales
@@ -259,8 +273,8 @@ flowity.iq_api/
 ### Dashboard
 - `GET /api/dashboard` - KPIs y datos del dashboard
 
-### Recursos (Productos, Servicios, Reservas, Encargos)
-- `GET /api/productos` / `/api/servicios` / `/api/reservas` / `/api/encargos`
+### Recursos (Productos, Servicios, Reservas, Encargos, Suscripciones)
+- `GET /api/productos` / `/api/servicios` / `/api/reservas` / `/api/encargos` / `/api/suscripciones`
 - `POST`, `PUT`, `DELETE` - CRUD completo
 
 ### Proveedores

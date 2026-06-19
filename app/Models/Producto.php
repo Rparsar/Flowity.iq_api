@@ -45,7 +45,7 @@ class Producto extends Model
 
     public function suscripciones()
     {
-        return $this->morphMany(Suscripcion::class, 'suscriptible');
+        return $this->hasMany(Suscripcion::class);
     }
 
     public function ventaDetallesPolimorficas()

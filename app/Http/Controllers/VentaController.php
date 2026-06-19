@@ -7,25 +7,59 @@ use App\Models\ProductoVenta;
 use App\Models\ServicioVenta;
 use App\Models\ReservaVenta;
 use App\Models\EncargoVenta;
+use App\Models\SuscripcionVenta;
+use App\Models\Suscripcion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class VentaController extends Controller
 {
+    private function calcularFechaProximoPago(string $plan): \Carbon\Carbon
+    {
+        return match($plan) {
+            'trimestral' => now()->addDays(90),
+            'semestral' => now()->addDays(180),
+            default => now()->addDays(30), // mensual
+        };
+    }
+
+    private function crearSuscripcionVenta(int $ventaId, array $item): SuscripcionVenta
+    {
+        $suscripcion = Suscripcion::findOrFail($item['recurso_id']);
+        
+        // Validar que el plan seleccionado esté permitido
+        $planSeleccionado = $item['plan'] ?? 'mensual';
+        if (!in_array($planSeleccionado, $suscripcion->planes ?? ['mensual'])) {
+            throw new \Exception("El plan '{$planSeleccionado}' no está permitido para esta suscripción");
+        }
+
+        $subtotal = ($item['cantidad'] ?? 1) * $item['precio'];
+
+        return SuscripcionVenta::create([
+            'venta_id'          => $ventaId,
+            'suscripcion_id'    => $item['recurso_id'],
+            'cantidad'          => $item['cantidad'] ?? 1,
+            'precio'            => $item['precio'],
+            'subtotal'          => $subtotal,
+            'fecha_inicio'      => now(),
+            'fecha_proximo_pago' => $this->calcularFechaProximoPago($planSeleccionado),
+        ]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $ventas = Venta::when($request->estado, fn($q, $v) => $q->where('estado', $v))
             ->when($request->desde, fn($q, $v) => $q->whereDate('fecha', '>=', $v))
             ->when($request->hasta, fn($q, $v) => $q->whereDate('fecha', '<=', $v))
-            ->with(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas'])
+            ->with(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas', 'suscripcionVentas'])
             ->latest('fecha')
             ->get();
 
         return response()->json([
             'total'  => $ventas->count(),
             'ventas' => $ventas,
-        ], 201);
+        ], 200);
     }
 
     public function store(Request $request): JsonResponse
@@ -40,12 +74,14 @@ class VentaController extends Controller
                 'estado'      => 'in:completada,pendiente,cancelada',
                 'metodo_pago' => 'nullable|string|max:255',
                 'items'       => 'required|array|min:1',
-                'items.*.tipo'         => 'required|in:producto,servicio,reserva,encargo',
+                'items.*.tipo'         => 'required|in:producto,servicio,reserva,encargo,suscripcion',
                 'items.*.recurso_id'   => 'required|integer',
                 'items.*.cantidad'     => 'sometimes|integer|min:1',
                 'items.*.fecha'        => 'sometimes|date_format:Y-m-d H:i:s',
                 'items.*.fecha_inicio' => 'sometimes|nullable|date_format:Y-m-d H:i:s',
                 'items.*.fecha_fin'    => 'sometimes|nullable|date_format:Y-m-d H:i:s',
+                'items.*.fecha_proximo_pago' => 'sometimes|nullable|date_format:Y-m-d H:i:s',
+                'items.*.plan'         => 'sometimes|in:mensual,trimestral,semestral',
                 'items.*.precio'       => 'required|numeric|min:0',
             ]);
 
@@ -100,12 +136,13 @@ class VentaController extends Controller
                         'precio'     => $item['precio'],
                         'subtotal'   => $subtotal,
                     ]),
+                    'suscripcion' => $this->crearSuscripcionVenta($venta->id, $item),
                 };
             }
 
             return response()->json([
                 'message' => 'Venta creada exitosamente',
-                'venta' => $venta->load(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas']),
+                'venta' => $venta->load(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas', 'suscripcionVentas']),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -122,6 +159,7 @@ class VentaController extends Controller
             'servicioVentas.servicio:id,nombre',
             'reservaVentas.reserva:id,nombre',
             'encargoVentas.encargo:id,nombre',
+            'suscripcionVentas.suscripcion:id,nombre',
         ]));
     }
 
@@ -139,7 +177,7 @@ class VentaController extends Controller
         return response()->json([
             'message' => 'Venta actualizada exitosamente',
             'venta' => $venta->fresh()->load(['productoVentas', 'servicioVentas', 'reservaVentas', 'encargoVentas']),
-        ], 201);
+        ], 200);
     }
 
     public function destroy(Venta $venta): JsonResponse
@@ -148,7 +186,7 @@ class VentaController extends Controller
 
         return response()->json([
             'message' => 'Venta eliminada exitosamente',
-        ], 201);
+        ], 200);
     }
 
     public function estadisticas(): JsonResponse
@@ -164,7 +202,7 @@ class VentaController extends Controller
             'completadas' => $completadas,
             'pendientes' => $pendientes,
             'ticket_medio' => $totalVentas > 0 ? (float) ($totalIngresos / $totalVentas) : 0,
-        ], 201);
+        ], 200);
     }
 
     public function getEstadisticasVentas(): JsonResponse
@@ -182,6 +220,6 @@ class VentaController extends Controller
             'pendientes' => $pendientes,
             'canceladas' => $canceladas,
             'ticket_medio' => $totalVentas > 0 ? (float) ($totalIngresos / $totalVentas) : 0,
-        ], 201);
+        ], 200);
     }
 }

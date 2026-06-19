@@ -2,42 +2,40 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Suscripcion extends Model
 {
+    use HasFactory;
+
     protected $table = 'suscripciones';
 
-    protected $fillable = ['suscriptible_id', 'suscriptible_type', 'tipo_periodo', 'cantidad_periodos', 'estado'];
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'precio',
+        'planes',
+        'estado',
+        'producto_id',
+    ];
 
-    protected $casts = [];
+    protected $casts = [
+        'precio' => 'decimal:2',
+        'planes' => 'array',
+    ];
 
-    public function suscriptible()
+    public function producto(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Producto::class);
     }
 
-    // TODO: Refactorizar métodos de cálculo de próximo pago sin fecha_proximo_pago
-    // public function calcularProximoPago()
-    // {
-    //     $fecha = $this->fecha_proximo_pago;
-    //     $periodo = $this->tipo_periodo;
-    //     $cantidad = $this->cantidad_periodos;
-    //
-    //     return match($periodo) {
-    //         'dia' => $fecha->addDays($cantidad),
-    //         'semana' => $fecha->addWeeks($cantidad),
-    //         'mes' => $fecha->addMonths($cantidad),
-    //         'año' => $fecha->addYears($cantidad),
-    //         default => $fecha,
-    //     };
-    // }
-    //
-    // public function renovar()
-    // {
-    //     $this->fecha_proximo_pago = $this->calcularProximoPago();
-    //     $this->save();
-    // }
+    public function suscripcionVentas(): HasMany
+    {
+        return $this->hasMany(SuscripcionVenta::class);
+    }
 
     public function cancelar()
     {

@@ -49,4 +49,9 @@ class Venta extends Model
     {
         return $this->hasMany(EncargoVenta::class);
     }
+
+    public function suscripcionVentas(): HasMany
+    {
+        return $this->hasMany(SuscripcionVenta::class);
+    }
 }

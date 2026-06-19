@@ -27,6 +27,8 @@ Route::prefix('public')->group(function () {
     Route::get('/reservas/{reserva}', [ReservaController::class, 'show']);
     Route::get('/encargos', [EncargoController::class, 'index']);
     Route::get('/encargos/{encargo}', [EncargoController::class, 'show']);
+    Route::get('/suscripciones', [SuscripcionController::class, 'index']);
+    Route::get('/suscripciones/{suscripcion}', [SuscripcionController::class, 'show']);
     Route::post('/ventas', [VentaController::class, 'store']);
 });
 

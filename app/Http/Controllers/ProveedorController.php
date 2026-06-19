@@ -42,13 +42,27 @@ class ProveedorController extends Controller
         ], 201);
     }
 
-    public function show(Proveedor $proveedor): JsonResponse
+    public function show($id): JsonResponse
     {
-        return response()->json($proveedor->load('productos'));
+        $proveedor = Proveedor::find($id);
+        
+        if (!$proveedor) {
+            return response()->json(['error' => 'Proveedor no encontrado'], 404);
+        }
+        
+        $proveedor->load('productos');
+        
+        return response()->json($proveedor);
     }
 
-    public function update(Request $request, Proveedor $proveedor): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $proveedor = Proveedor::find($id);
+        
+        if (!$proveedor) {
+            return response()->json(['error' => 'Proveedor no encontrado'], 404);
+        }
+        
         $validated = $request->validate([
             'nombre' => 'sometimes|string|max:255',
             'contacto' => 'nullable|string|max:255',
@@ -62,12 +76,18 @@ class ProveedorController extends Controller
 
         return response()->json([
             'message' => 'Proveedor actualizado exitosamente',
-            'proveedor' => $proveedor->fresh(),
+            'proveedor' => $proveedor->load('productos'),
         ], 200);
     }
 
-    public function destroy(Proveedor $proveedor): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $proveedor = Proveedor::find($id);
+        
+        if (!$proveedor) {
+            return response()->json(['error' => 'Proveedor no encontrado'], 404);
+        }
+        
         $proveedor->delete();
 
         return response()->json([
